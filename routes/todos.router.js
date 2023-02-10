@@ -7,6 +7,7 @@ router.get('/', (req, res) => {
   res.send('Hi');
 });
 
+// 할 일 추가 API
 router.post('/todos', async (req, res) => {
   const { value } = req.body;
   const maxOrderByUserId = await Todo.findOne().sort('-order').exec();
@@ -21,12 +22,14 @@ router.post('/todos', async (req, res) => {
   res.send({ todo });
 });
 
+// 할 일 목록 조회 API
 router.get('/todos', async (req, res) => {
   const todos = await Todo.find().sort('-order').exec(); // 특정 조건 입력 X일 경우, 모든 데이터 조회 / order앞에 -붙이면 내림차순!
 
   res.send({ todos });
 });
 
+// 할 일 순서 변경 API
 router.patch('/todos/:todoId', async (req, res) => {
   const { todoId } = req.params;
   const { order } = req.body;
@@ -51,6 +54,16 @@ router.patch('/todos/:todoId', async (req, res) => {
   }
 
   res.send();
+});
+
+// 할 일 삭제 API
+router.delete('/todos/:todoId', async (req, res) => {
+  const { todoId } = req.params;
+
+  const todo = await Todo.findById(todoId).exec();
+  await todo.delete();
+
+  res.send({});
 });
 
 module.exports = router;
